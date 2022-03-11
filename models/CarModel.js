@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const modelCarSchema = new mongoose.Schema({
+const carModelSchema = new mongoose.Schema({
     name: {
         type: String,
         required: "name is required",
@@ -18,8 +18,13 @@ const modelCarSchema = new mongoose.Schema({
             type: String,
             required:false
         }
-    }]
+    }],
+    brand: {
+        type: String,
+        ref: 'Brand',
+        required: false,
+    }
 });
 
 //Export model
-module.exports = mongoose.model('ModelCar', modelCarSchema);
+module.exports = mongoose.model('CarModel', carModelSchema);
