@@ -1,12 +1,15 @@
 const express = require('express');
-const app = express();
-
-// import mongoose
 const morgan = require('morgan');
 const mongoose = require('mongoose');
+const { graphqlHTTP } = require('express-graphql');
+const schema = require('./graphql/schema');
+const resolvers = require('./graphql/resolvers');
+const dotenv = require('dotenv');
+
+const app = express();
+
 
 // load env variables
-const dotenv = require('dotenv');
 dotenv.config()
 
 // db connection
@@ -15,17 +18,19 @@ mongoose.connect(
     {useNewUrlParser: true}
 )
 .then(() => console.log('DB Connected'))
-
+    
 mongoose.connection.on('error', err => {
     console.log(`DB connection error: ${err.message}`)
-  });
+});
+    
 
-// bring in routes
-// - const postRoutes = require('./routes/post')
-
-// middleware
 app.use(morgan('dev'));
-// - app.use("/", postRoutes);
+
+app.use("/graphql", graphqlHTTP({
+    schema: schema,
+    rootValue: resolvers,
+    graphiql: true
+}));
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {console.log(`A Node Js API is listening on port : ${port}`)});
